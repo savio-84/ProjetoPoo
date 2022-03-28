@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PooProject
 {
-    public class Person
+    public interface Person
     {
         public string? Email { get; set; }
         public string? Password { get; set; }

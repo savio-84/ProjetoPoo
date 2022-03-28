@@ -86,7 +86,7 @@ namespace PooProject
             if (grade != null)
             {
                 student.Grade = grade;
-            }            
+            }
         }
 
         public void Delete(Guid id)
@@ -96,6 +96,45 @@ namespace PooProject
             {
                 repository.Remove(student);
             }
+        }
+
+        public void GetByCourse(Course course)
+        {
+            List<Student> students = repository.Where(x => x.Course == course).OrderBy(x => x.Enrolment).ToList();
+            int total = repository.Where(x => x.Course == course).Count();
+            foreach (Student student in students)
+            {
+                Console.WriteLine("Id: "+student.Id);
+                Console.WriteLine("Nome: "+student.Name);
+                Console.WriteLine("-----------------------------");
+            }
+            Console.WriteLine("Total: "+total);
+        }
+
+        public void ListFirst3()
+        {
+            List<Student> students = repository.OrderBy(x => x.Enrolment).Take(3).ToList();
+            foreach (Student student in students)
+            {
+                Console.WriteLine("Id: " + student.Id);
+                Console.WriteLine("Nome: " + student.Name);
+                Console.WriteLine("-----------------------------");
+            }
+        }
+
+        public void GetNamesList()
+        {
+            List<string> students = repository.OrderBy(x => x.Enrolment).Select(x => x.Name).ToList();
+            foreach(string name in students)
+            {
+                Console.WriteLine(name);
+            }
+        }
+
+        public void GetFirst()
+        {
+            Student student = repository.FirstOrDefault();
+            Console.WriteLine(student.Id + " - " + student.Name);
         }
     }
 }

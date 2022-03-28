@@ -31,7 +31,7 @@ namespace PooProject
 
             Principal principal = new ("diretor@escolar.ifrn.edu.br", "123123");
 
-            Person user = new Person();
+            Principal principalUser = new Principal("","");
 
             try
             {
@@ -77,10 +77,14 @@ namespace PooProject
                 Console.WriteLine("Opcao 15 -> Listagem de horarios");
                 Console.WriteLine("Opcao 16 -> Atualizacao de horario");
                 Console.WriteLine("Opcao 17 -> Remover horario");
-                Console.WriteLine("Opcao 28 -> Cadastro de curso");
-                Console.WriteLine("Opcao 29 -> Listagem de cursos");
+                Console.WriteLine("Opcao 18 -> Cadastro de curso");
+                Console.WriteLine("Opcao 19 -> Listagem de cursos");
                 Console.WriteLine("Opcao 20 -> Atualizar curso");
                 Console.WriteLine("Opcao 21 -> Remover curso");
+                Console.WriteLine("Opcao 22 -> Listagem de alunos por curso");
+                Console.WriteLine("Opcao 23 -> Listagem dos 3 primeiros alunos (em ordem do numero da matricula)");
+                Console.WriteLine("Opcao 24 -> Listagem dos nomes dos alunos");
+                Console.WriteLine("Opcao 25 -> Listagem do primeiro aluno");
 
 
                 int option = int.Parse(Console.ReadLine());
@@ -88,6 +92,7 @@ namespace PooProject
                 switch (option)
                 {
                     case 1:
+                        // login diretor
                         Console.WriteLine("Digite o seu email:");
                         string email = Console.ReadLine();
                         Console.WriteLine("Digite sua senha:");
@@ -95,17 +100,20 @@ namespace PooProject
 
                         if (email == principal.Email && password == principal.Password && email != null && password != null)
                         {
-                            user.Email = email;
-                            user.Password = password;
+                            principalUser.Email = email;
+                            principalUser.Password = password;
                         }
 
                         break;
 
                     case 2:
-                        if (user.Email == "diretor@escolar.ifrn.edu.br" && user.Password == "123123")
+                        // cadastro de aluno
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
                         {
                             Course? course = new Course("", null);
+                            course = null;
                             Grade? grade = new Grade(null, null);
+                            grade = null;
                             Console.WriteLine("Digite o nome do aluno:");
                             string name = Console.ReadLine();
                             Console.WriteLine("Digite o email do aluno:");
@@ -120,43 +128,99 @@ namespace PooProject
 
                             if (resp1 == "sim")
                             {
-                                Console.WriteLine("digite o id do curso:");
-                                string courseId = Console.ReadLine();
-
-                                if (courseId != null)
-                                {
-                                    course = coursesRepository.ListOne(new Guid(courseId));
-                                }
+                                Console.WriteLine("Digite o id da turma:");
+                                Guid classId = new Guid(Console.ReadLine());
+                                Course savedCourse = coursesRepository.ListOne(classId);
+                                course = savedCourse;
                             }
 
-                            Console.WriteLine("deseja definir um boletim? (sim ou nao)");
+
+                            Console.WriteLine("deseja definir uma grade? (sim ou nao)");
                             string resp2 = Console.ReadLine();
 
                             if (resp2 == "sim")
                             {
-                                Console.WriteLine("Digite o id do boletim");
-                                string gradeId = Console.ReadLine();
-
-                                if (gradeId != null)
-                                {
-                                    grade = gradesRepository.ListOne(new Guid(gradeId));
-                                }
+                                Console.WriteLine("Digite o id da turma:");
+                                Guid classId = new Guid(Console.ReadLine());
+                                Grade savedGrade = gradesRepository.ListOne(classId);
+                                grade = savedGrade;
+                            }
+                            else
+                            {
+                                grade = null;
                             }
 
-                            studentsRepository.Insert(name, email: studentEmail, password: studentPassword, enrolment: studentEnrolment, course, grade);
+                            Console.WriteLine(course + " - " + grade);
 
+                            studentsRepository.Insert(name, email: studentEmail, password: studentPassword, enrolment: studentEnrolment, course, grade);
                         }
                         break;
 
                     case 3:
-                        if (user.Email == "diretor@escolar.ifrn.edu.br" && user.Password == "123123")
+                        // listagem de aluno
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
                         {
                             ListarAlunos();
                         }
                         break;
 
                     case 4:
-                        if (user.Email == "diretor@escolar.ifrn.edu.br" && user.Password == "123123")
+                        // atualizacao de aluno
+                        /*if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
+                        {
+                            Console.WriteLine("Digite o id do aluno");
+                            Guid id = Guid.Parse(Console.ReadLine());
+
+                            Course? course = new Course("", null);
+                            Grade? grade = new Grade(null, null);
+
+                            Console.WriteLine("Digite o nome do aluno:");
+                            string name = Console.ReadLine();
+                            Console.WriteLine("Digite o email do aluno:");
+                            string studentEmail = Console.ReadLine();
+                            Console.WriteLine("Digite a senha do aluno");
+                            string studentPassword = Console.ReadLine();
+                            Console.WriteLine("Digite a matricula do aluno");
+                            string studentEnrolment = Console.ReadLine();
+
+                            Console.WriteLine("Deseja Cadastrar o curso? (sim ou nao)");
+                            string resp1 = Console.ReadLine();
+
+                            if (resp1 == "sim")
+                            {
+                                Console.WriteLine("Digite o id da turma:");
+                                Guid classId = new Guid(Console.ReadLine());
+                                Course savedCourse = coursesRepository.ListOne(classId);
+                                Console.WriteLine("Chegou aqui"+savedCourse.Id);
+                                course = savedCourse;
+                            }
+                            else
+                            {
+                                course = null;
+                            }
+
+                            Console.WriteLine(course.Id);
+
+                            Console.WriteLine("deseja definir um boletim? (sim ou nao)");
+                            string resp2 = Console.ReadLine();
+
+                            if (resp2 == "sim")
+                            {
+                                Console.WriteLine("Digite o id da turma:");
+                                Guid classId = new Guid(Console.ReadLine());
+                                Grade savedGrade = gradesRepository.ListOne(classId);
+                                grade = savedGrade;
+                            }
+                            else
+                            {
+                                course = null;
+                            }
+
+                            studentsRepository.Update(id, name, email: studentEmail, password: studentPassword, enrolment: studentEnrolment, course, grade);
+                            Console.WriteLine(studentsRepository.ListOne(id).Course);
+                        }*/
+
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
                         {
                             Console.WriteLine("Digite o id do aluno");
                             Guid id = Guid.Parse(Console.ReadLine());
@@ -185,6 +249,10 @@ namespace PooProject
                                     course = coursesRepository.ListOne(new Guid(courseId));
                                 }
                             }
+                            else
+                            {
+                                course = studentsRepository.ListOne(id).Course;
+                            }
 
                             Console.WriteLine("deseja definir um boletim? (sim ou nao)");
                             string resp2 = Console.ReadLine();
@@ -198,6 +266,10 @@ namespace PooProject
                                 {
                                     grade = gradesRepository.ListOne(new Guid(gradeId));
                                 }
+                            }
+                            else
+                            {
+                                grade = studentsRepository.ListOne(id).Grade;
                             }
 
                             studentsRepository.Update(id, name, email: studentEmail, password: studentPassword, enrolment: studentEnrolment, course, grade);
@@ -206,7 +278,8 @@ namespace PooProject
                         break;
 
                     case 5:
-                        if (user.Email == "diretor@escolar.ifrn.edu.br" && user.Password == "123123")
+                        // remover aluno
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
                         {
                             Console.WriteLine("Digite o id do aluno");
                             Guid id = Guid.Parse(Console.ReadLine());
@@ -215,7 +288,8 @@ namespace PooProject
                         break;
 
                     case 6:
-                        if (user.Email == "diretor@escolar.ifrn.edu.br" && user.Password == "123123")
+                        // Cadastro de professor
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
                         {
                             Console.WriteLine("Digite o nome do professor:");
                             string teachersName = Console.ReadLine();
@@ -230,7 +304,8 @@ namespace PooProject
                         break;
 
                     case 7:
-                        if (user.Email == "diretor@escolar.ifrn.edu.br" && user.Password == "123123")
+                        // Listagem de professor
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
                         {
                             Console.WriteLine("--------- Listagem de Professores--------");
                             List<Professor> teachers = professorsRepository.ListAll();
@@ -243,7 +318,8 @@ namespace PooProject
                         break;
 
                     case 8:
-                        if (user.Email == "diretor@escolar.ifrn.edu.br" && user.Password == "123123")
+                        // atualizar professor
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
                         {
                             Console.WriteLine("Digite o id do professor");
                             Guid id = Guid.Parse(Console.ReadLine());
@@ -259,7 +335,8 @@ namespace PooProject
                         break;
 
                     case 9:
-                        if (user.Email == "diretor@escolar.ifrn.edu.br" && user.Password == "123123")
+                        // deletar professor
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
                         {
                             Console.WriteLine("Digite o id do professor");
                             Guid id = Guid.Parse(Console.ReadLine());
@@ -269,7 +346,8 @@ namespace PooProject
                         break;
 
                     case 10:
-                        if (user.Email == "diretor@escolar.ifrn.edu.br" && user.Password == "123123")
+                        // cadastro de sala
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
                         {
                             Console.WriteLine("Digite a identificacao da sala:");
                             string identification = Console.ReadLine();
@@ -279,7 +357,8 @@ namespace PooProject
                         break;
 
                     case 11:
-                        if (user.Email == "diretor@escolar.ifrn.edu.br" && user.Password == "123123")
+                        // listagem de salas
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
                         {
                             Console.WriteLine("--------- Listagem de Salas--------");
                             List<Room> roomsList = roomsRepository.ListAll();
@@ -292,7 +371,8 @@ namespace PooProject
                         break;
 
                     case 12:
-                        if (user.Email == "diretor@escolar.ifrn.edu.br" && user.Password == "123123")
+                        // atualizar sala
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
                         {
                             Console.WriteLine("Digite o id da sala:");
                             Guid id = new Guid(Console.ReadLine());
@@ -304,7 +384,8 @@ namespace PooProject
                         break;
 
                     case 13:
-                        if (user.Email == "diretor@escolar.ifrn.edu.br" && user.Password == "123123")
+                        // deletar sala
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
                         {
                             Console.WriteLine("Digite o id da sala:");
                             Guid id = new Guid(Console.ReadLine());
@@ -314,7 +395,8 @@ namespace PooProject
                         break;
 
                     case 14:
-                        if (user.Email == "diretor@escolar.ifrn.edu.br" && user.Password == "123123")
+                        // cadastro de horario
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
                         {
                             Console.WriteLine("Digite a data de inicio:");
                             DateTime startDate = DateTime.Parse(Console.ReadLine());
@@ -361,7 +443,8 @@ namespace PooProject
                         break;
 
                     case 15:
-                        if (user.Email == "diretor@escolar.ifrn.edu.br" && user.Password == "123123")
+                        // listagem de horarios
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
                         {
                             Console.WriteLine("--------- Listagem de Horarios--------");
                             List<Schedule> schedules = schedulesRepository.ListAll();
@@ -385,7 +468,8 @@ namespace PooProject
                         break;
 
                     case 16:
-                        if (user.Email == "diretor@escolar.ifrn.edu.br" && user.Password == "123123")
+                        // atualizar horario
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
                         {
                             Console.WriteLine("Digite o id do horario:");
                             Guid id = Guid.Parse(Console.ReadLine());
@@ -435,7 +519,8 @@ namespace PooProject
                         break;
 
                     case 17:
-                        if (user.Email == "diretor@escolar.ifrn.edu.br" && user.Password == "123123")
+                        // deletar horario
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
                         {
                             Console.WriteLine("Digite o id do Horario");
                             Guid id = Guid.Parse(Console.ReadLine());
@@ -444,7 +529,8 @@ namespace PooProject
                         break;
 
                     case 18:
-                        if (user.Email == "diretor@escolar.ifrn.edu.br" && user.Password == "123123")
+                        // cadastro de curso
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
                         {
                             Console.WriteLine("Digite a descricao do curso:");
                             string description = Console.ReadLine();
@@ -462,6 +548,7 @@ namespace PooProject
                         break;
 
                     case 19:
+                        // listagem de cursos
                         Console.WriteLine("--------- Listagem de Horarios--------");
                         List<Course> courses = coursesRepository.ListAll();
 
@@ -472,7 +559,8 @@ namespace PooProject
                         break;
 
                     case 20:
-                        if (user.Email == "diretor@escolar.ifrn.edu.br" && user.Password == "123123")
+                        // atualizar curso
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
                         {
                             Console.WriteLine("Digite o id do curso:");
                             Guid id = Guid.Parse(Console.ReadLine());
@@ -492,11 +580,44 @@ namespace PooProject
                         break;
 
                     case 21:
-                        if (user.Email == "diretor@escolar.ifrn.edu.br" && user.Password == "123123")
+                        // deletar curso
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
                         {
                             Console.WriteLine("Digite o id do curso:");
                             Guid id = Guid.Parse(Console.ReadLine());
                             coursesRepository.Delete(id);
+                        }
+                        break;
+
+                    case 22:
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
+                        {
+                            Console.WriteLine("Digite o id do curso:");
+                            Guid id = Guid.Parse(Console.ReadLine());
+                            Course course = coursesRepository.ListOne(id);
+
+                            studentsRepository.GetByCourse(course);
+                        }
+                        break;
+
+                    case 23:
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
+                        {
+                            studentsRepository.ListFirst3();
+                        }
+                        break;
+
+                    case 24:
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
+                        {
+                            studentsRepository.GetNamesList();
+                        }
+                        break;
+
+                    case 25:
+                        if (principalUser.Email == "diretor@escolar.ifrn.edu.br" && principalUser.Password == "123123")
+                        {
+                            studentsRepository.GetFirst();
                         }
                         break;
 
@@ -514,7 +635,15 @@ namespace PooProject
 
             foreach (Student student in students)
             {
-               Console.WriteLine(student.Id + " - " + student.Name + " - " + student.Email + " - " + student.Enrolment);
+                Console.WriteLine("Id: " + student.Id);
+                Console.WriteLine("Nome: " + student.Name);
+                Console.WriteLine("Email: " + student.Email);
+                Console.WriteLine("Matricula: " + student.Enrolment);
+                if (student.Course != null)
+                {
+                    Console.WriteLine("Id do curso: " + student.Course.Id);
+                }
+                Console.WriteLine("------------------------------------");
             }
 
         }

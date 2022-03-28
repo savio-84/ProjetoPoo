@@ -9,6 +9,8 @@ namespace PooProject
     public class Student: Person
     {
         public Guid Id { get; } = Guid.NewGuid();
+        public string? Email { get; set; }
+        public string? Password { get; set; }
         public string Name { get; set; }
         public string Enrolment { get; set; }
         public Course? Course { get; set; }

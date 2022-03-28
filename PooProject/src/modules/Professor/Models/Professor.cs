@@ -13,6 +13,9 @@ namespace PooProject
         public DateTime CreatedAt { get; }
         public DateTime UpdatedAt { get; }
 
+        public string? Email { get; set; }
+        public string? Password { get; set; }
+
         public Professor(string name, string email, string password)
         {
             if (this.Id.Equals(Guid.Empty))
